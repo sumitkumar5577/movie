@@ -1,0 +1,128 @@
+<?php
+
+/**
+ * @file
+ * Contains multi_step.module
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+
+
+
+
+// function multi_step_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
+//   //$form['#submit'][] = '_multi_step_foo';
+//   $form['#validate'][] = '_multi_step_foo';
+
+
+// }
+
+// function _multi_step_foo(&$form, FormStateInterface $form_state) {
+
+//   drupal_set_message('It works!');
+// }
+
+/**
+ * Implements hook_form_alter().
+ */
+ function multi_step_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+   dpm($form_id);
+   switch ($form_id) {
+     // Alter login form and add own custom submit handler.
+     case 'user_login_form':
+          
+       //$form['#submit'][] = '_multi_step_user_login_form_submit';
+         $form['#validate'][] = 'Drupal\multi_step\Form\MultiStepForm::multi_loginform_validate';
+         //dpm($form); 
+        //$form_state->setRebuild();
+           //return;
+
+         //$form['actions']['submit']['#submit'][] = 'multi_step_multistep_login_submit';
+       break;
+
+     case 'user_register_form':
+     $form['#validate'][] = 'Drupal\multi_step\Form\MultiStepForm::multi_registerform_submit';
+     break;
+
+   }
+ }
+
+
+
+/**
+ * Custom submit handler for login form.
+ */
+// public static function _multi_step_user_login_form_submit($form, FormStateInterface $form_state) {
+//   dpm('login');
+//   // Set redirect to login form.
+//   //$form_state->setRedirect('YOUR.MENU-ROUTER.NAME');
+// }
+
+
+
+
+
+/**
+ * Implements hook_help().
+ */
+
+function multi_step_help($route_name, RouteMatchInterface $route_match)
+{
+  switch ($route_name) {
+    // Main module help for the multi_step module.
+    case 'help.page.multi_step':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Multi Step Form') . '</p>';
+      return $output;
+    break;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+
+// function multi_step_theme()
+// {
+//   $theme = [];
+
+//   return $theme;
+// }
+
+function multi_step_theme($existing, $type, $theme, $path) {
+  return array(
+    'multi_step' => array(
+      'variables' => array('test_var' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+// function multi_step_form_user_login_form_alter(&$form, FormState $form_state) {
+//   $form['#submit'][] = 'multi_step_user_login_submit';
+// }
+
+// /**
+//  * Form submission handler for user_login_form().
+//  *
+//  * Redirects the user to the dashboard after logging in.
+//  */
+// function multi_step_user_login_submit(&$form, FormState $form_state) {
+
+// dsm('ssd');
+//   // $url = Url::fromRoute('mymodule.dashboard');
+
+//   // // Check if a destination was set, probably on an exception controller.
+//   // // @see \Drupal\user\Form\UserLoginForm::submitForm()
+//   // $request = \Drupal::service('request_stack')->getCurrentRequest();
+//   // if (!$request->request->has('destination')) {
+//   //   $form_state->setRedirectUrl($url);
+//   // }
+//   // else {
+//   //   $request->query->set('destination', $request->request->get('destination'));
+//   // }
+// }

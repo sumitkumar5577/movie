@@ -1,0 +1,51 @@
+<?php
+/**
+* @file
+* Contains multi_step.module
+*/
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\FormBase;
+/**
+* Implements hook_form_alter().
+*/
+function multi_step_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+    switch ($form_id)
+    {
+        case 'user_login_form':
+        global $base_url;
+        $form['name']['#title']=t('Username or Email');
+        $form['pass']['#description']=t('Enter the password that accompanies your username. <a href="@password">Forgot password?</a>',array('@password' => $base_url.'/user/password'));
+        $form['#validate'][] = 'Drupal\multi_step\Form\MultiStepForm::multi_loginform_validate';
+        break;
+        case 'user_register_form':
+        $tempstore = \Drupal::service('user.private_tempstore')->get('multi_step');
+        $data = $tempstore->get('combovalue');
+        if (strpos($data,"@") == true)
+        {
+            $form['account']['mail']['#default_value']=$data;
+        }
+        else
+        {
+            $form['account']['name']['#default_value']=$data;
+        }
+        break;
+    }
+}
+/**
+* Implements hook_help().
+*/
+function multi_step_help($route_name, RouteMatchInterface $route_match)
+{
+    switch ($route_name)
+    {
+        // Main module help for the multi_step module.
+        case 'help.page.multi_step':
+        $output = '';
+        $output .= '<h3>' . t('About') . '</h3>';
+        $output .= '<p>' . t('Multi Step Form') . '</p>';
+        return $output;
+        break;
+    }
+}

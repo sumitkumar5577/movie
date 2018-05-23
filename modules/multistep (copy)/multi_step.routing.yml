@@ -1,0 +1,14 @@
+multi_step.multi_step_form:
+  path: '/multi-step-form'
+  defaults:
+    _form: '\Drupal\multi_step\Form\MultiStepForm'
+    _title: 'Multi Step Form'
+  requirements:
+    _role: 'anonymous'
+multi_step.multi_step_form_two:
+  path: '/multi/step/form2'
+  defaults:
+    _form: '\Drupal\multi_step\Form\MultiStepForm2'
+    _title: 'Second Multi Step Form'
+  requirements:
+    _role: 'anonymous'

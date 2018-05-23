@@ -1,0 +1,23 @@
+<?php
+/**
+ * @file
+ * Bootstrap sub-theme.
+ *
+ * Place your custom PHP code in this file.
+ */
+function subtheme_preprocess(&$variables, $hook) {
+
+  if ($hook == 'node') {
+    //xdebug_break();
+  }
+  // kint($variables['label']);
+   // if ($variables['logged_in'] == TRUE && $variables['node']->getOwnerId() == $variables['user']->id()) {
+   //  // $variables['label']['#suffix'] = ' [You are the Author]';
+   // }
+ }
+function subtheme_preprocess_node(&$variables) {
+ // kint($variables['label']);
+  // if ($variables['logged_in'] == TRUE && $variables['node']->getOwnerId() == $variables['user']->id()) {
+  //  // $variables['label']['#suffix'] = ' [You are the Author]';
+  // }
+}

@@ -1,0 +1,308 @@
+<?php
+
+/**
+ * @file
+ * Contains multi_step.module
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\FormBase;
+// use Drupal\Core\Form\FormStateInterface;
+
+
+
+// function multi_step_form_user_login_form_alter(&$form, FormStateInterface $form_state) {
+//   //$form['#submit'][] = '_multi_step_foo';
+//   $form['#validate'][] = '_multi_step_foo';
+
+
+// }
+
+// function _multi_step_foo(&$form, FormStateInterface $form_state) {
+
+//   drupal_set_message('It works!');
+// }
+
+/**
+ * Implements hook_form_alter().
+ */
+ function multi_step_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+   dpm($form_id);
+   switch ($form_id) {
+     // Alter login form and add own custom submit handler.
+     case 'user_login_form':
+         // ksm($form);
+          global $base_url;
+        //ksm($form_state);
+       //$form['#submit'][] = '_multi_step_user_login_form_submit';
+          $form['name']['#title']=t('Username or Email');
+          $form['pass']['#description']=t('Enter the password that accompanies your username.  <a href="@password">Forgot password?</a>',array('@password' => $base_url.'/user/password'));
+
+          
+         $form['#validate'][] = 'Drupal\multi_step\Form\MultiStepForm::multi_loginform_validate';
+          
+         //dpm($form); 
+        //$form_state->setRebuild();
+           //return;
+
+         //$form['actions']['submit']['#submit'][] = 'multi_step_multistep_login_submit';
+       break;
+
+     case 'user_register_form':
+     
+ksm($form);
+$tempstore = \Drupal::service('user.private_tempstore')->get('multi_step');
+$data = $tempstore->get('combovalue');
+ksm($data);
+dpm($_SESSION['regValue']);
+
+
+ if (strpos($data,"@") == true) {
+$form['account']['mail']['#default_value']=$data;
+}
+else{
+$form['account']['name']['#default_value']=$data;
+}
+   // $form['#validate'][] = 'Drupal\multi_step\Form\MultiStepForm::multi_registerform_submit';
+     // $form['#submit'][] = 'multi_step_autofill_username_in_register_form';
+    // $form['#action']="/drupal8/user/register";
+    // $form['random_user'] = array(
+    //   '#type' => 'button',
+    //   '#value' => 'Random Username',
+    //   '#ajax' => array(
+    //     'callback' => 'Drupal\multi_step\Form\MultiStepForm::respondToAjax',
+    //     'event' => 'click',
+    //     'progress' => array(
+    //       'type' => 'throbber',
+    //       'message' => 'Getting Random Username',
+    //     ),
+        
+    //   ),
+    // );
+
+   // $form['go'] = [
+   //    '#type' => 'submit',
+   //    '#value' => $this->t('Go'),
+ 
+   //    // Modifications below.
+   //    '#ajax' => [
+   //      'callback' => 'Drupal\multi_step\Form\MultiStepForm::respondToAjax',
+   //      'event' => 'click',
+   //      'progress' => ['type' => 'throbber', 'message' => NULL],
+   //    ],
+   //  ];  
+
+
+   // foreach (array_keys($form['actions']) as $action) {
+   //    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+   //      $form['actions'][$action]['#submit'][] = 'multi_step_google_callback';
+   //    }
+   //  }
+
+ 
+
+     // that uses the same submit function(s) as the original Submit button
+    // $form['actions']['google_map'] = array(
+    //   '#type' => 'submit',
+    //   '#access' => TRUE,
+    //   '#value' => t('Google Map'),
+    //   '#weight' => 30,
+    // );
+    // // include our own additional custom submit function
+    // $form['actions']['google_map']['#submit'][] = 'multi_step_google_callback';
+  //   $form['submit_google'] = array(
+  //   '#type' => 'submit',
+  //   '#value' => t('Google Map'),
+  //   '#submit' => array('multi_registerform_submit'),
+  //   '#name' => 'google',
+  // );
+    //$form['actions']['submit']['#submit'][] = 'Drupal\multi_step\Form\MultiStepForm::contact_user_profile_form_submit';
+    //array_unshift($form['actions']['submit']['#submit'][], 'Drupal\multi_step\Form\MultiStepForm::contact_user_profile_form_submit');
+     // array_unshift($form['#submit'][],'Drupal\multi_step\Form\MultiStepForm::multi_registerform_submit');
+     break;
+
+   }
+ }
+
+
+function multi_step_google_callback($form, $form_state) {
+  drupal_set_message('reg works!');
+}
+/**
+ * Custom submit callback for user_register_form.
+ */
+function multi_step_autofill_username_in_register_form(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  // drupal_set_message('reg works!');
+ 
+  drupal_set_message('reg works!');
+  $mail = $form_state->getValue('mail');
+  $form_state->setValue('name', $mail);
+}
+
+/**
+ * Custom submit handler for login form.
+ */
+// public static function _multi_step_user_login_form_submit($form, FormStateInterface $form_state) {
+//   dpm('login');
+//   // Set redirect to login form.
+//   //$form_state->setRedirect('YOUR.MENU-ROUTER.NAME');
+// }
+
+
+
+
+
+/**
+ * Implements hook_help().
+ */
+
+function multi_step_help($route_name, RouteMatchInterface $route_match)
+{
+  switch ($route_name) {
+    // Main module help for the multi_step module.
+    case 'help.page.multi_step':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Multi Step Form') . '</p>';
+      return $output;
+    break;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+
+// function multi_step_theme()
+// {
+//   $theme = [];
+
+//   return $theme;
+// }
+
+
+
+
+
+
+function multi_step_theme($existing, $type, $theme, $path) {
+  //dpm($theme);
+  return array(
+    'multi_step' => array(
+     'variables' => array('test_var' =>NULL),
+      'render element' => 'form',
+      'template' => 'multi-step',
+      'base hook' => 'form',
+    ),
+  );
+}
+
+
+// function theme_example_theme() {
+//   $items = [
+//     'my_element' => [
+//       'render element' => 'element',
+//     ],
+//   ];
+//   return $items;
+// }
+
+
+
+function multi_step_preprocess_multi_step(&$variables) {  
+
+  $entity = \Drupal::entityManager()
+    ->getStorage('user')
+    ->create(array());
+
+  $formObject = \Drupal::entityManager()
+    ->getFormObject('user', 'register')
+    ->setEntity($entity);
+
+  $form = \Drupal::formBuilder()->getForm($formObject);
+ 
+  $variables['register_form'] = $form;
+//$variables['#action']="/drupal8/user/register";
+   //$variables['register_form']['#submit'][]='multi_step_autofill_username_in_register_form';
+   //$form['register_form']['actions']['submit']['#submit']='multi_step_autofill_username_in_register_form';
+   //$variables['register_form']['actions']['submit']['#submit']='multi_step_autofill_username_in_register_form';
+   //array_unshift($variables['#submit'][],'multi_step_autofill_username_in_register_form');
+  //  array_unshift($variables['register_form']['actions']['submit']['#submit'], 'multi_step_autofill_username_in_register_form');
+  //   $variables['register_form']['#submit'][] = 'multi_step_autofill_username_in_register_form';
+  // ksm($variables);
+  //contact_user_profile_form_submit
+   // $form['register_form']['#submit']='Drupal\multi_step\Form\MultiStepForm::multi_registerform_submit';
+
+  //$formvalue = $form_state->getValue();
+  //ksm($formvalue);
+$tempstore = \Drupal::service('user.private_tempstore')->get('multi_step');
+$data = $tempstore->get('combovalue');
+
+ if (strpos($data,"@") == true) {
+$variables['register_form']['account']['mail']['#value']=$data;
+}
+else{
+$variables['register_form']['account']['name']['#value']=$data;
+}
+
+
+  // $variables['login_form'] = FALSE;
+  // if (!\Drupal::currentUser()->id()) {
+  //   $form = Drupal::formBuilder()->getForm(Drupal\user\Form\UserLoginForm::class) ; 
+  //   $render = Drupal::service('renderer');
+  //   $variables['login_form'] = $render->renderPlain($form);
+  // }
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+// function multi_step_theme($existing, $type, $theme, $path) {
+//   $theme = array();
+//   $theme['multi_step'] = array(
+//     'render element' => 'form',
+//     'base hook' => 'multi',
+//     'template' => 'multi-step',
+//     'path' => drupal_get_path('modules', 'multi_step') . '/templates',
+//    );
+//   return $theme;
+// }
+
+
+
+// function THEMENAME_preprocess_THEMEKEY(&$vars)
+// {
+//   $form = drupal_get_form(FORMNAME);
+//   $vars['my_form'] = drupal_render($form);
+// }
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+// function multi_step_form_user_login_form_alter(&$form, FormState $form_state) {
+//   $form['#submit'][] = 'multi_step_user_login_submit';
+// }
+
+// /**
+//  * Form submission handler for user_login_form().
+//  *
+//  * Redirects the user to the dashboard after logging in.
+//  */
+// function multi_step_user_login_submit(&$form, FormState $form_state) {
+
+// dsm('ssd');
+//   // $url = Url::fromRoute('mymodule.dashboard');
+
+//   // // Check if a destination was set, probably on an exception controller.
+//   // // @see \Drupal\user\Form\UserLoginForm::submitForm()
+//   // $request = \Drupal::service('request_stack')->getCurrentRequest();
+//   // if (!$request->request->has('destination')) {
+//   //   $form_state->setRedirectUrl($url);
+//   // }
+//   // else {
+//   //   $request->query->set('destination', $request->request->get('destination'));
+//   // }
+// }

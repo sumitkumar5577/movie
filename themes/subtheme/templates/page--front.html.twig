@@ -1,0 +1,29 @@
+
+<div id="frontpage-wrapper">
+  <div id="page">
+    ssssss
+    {% if page.highlighted %}
+      <div class="highlighted">
+        <aside class="layout-container section clearfix" role="complementary">
+          {{ page.highlighted }}
+        </aside>
+      </div>
+    {% endif %}
+    
+    <div id="main-wrapper" class="layout-main-wrapper layout-container clearfix">
+      <div id="main" class="layout-main clearfix">
+        
+        <main id="content" class="column main-content" role="main">
+          <section class="section">
+            <a id="main-content" tabindex="-1"></a>
+            {{ page.banner }}
+            <div class ="page-content">
+            {{ page.content }}
+            </div>  
+          </section>
+        </main>
+      </div>
+    </div>
+    
+  </div>
+</div>
